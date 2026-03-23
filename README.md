@@ -354,4 +354,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Built with ❤️ for modern sales teams who want to work smarter, not harder.
 
-**Transform your sales process with AI-powered lead intelligence.**
+**Transform your sales process with AI-powered lead intelligence.**#   k i r o - a i - p l a t f o r m  
+ 
