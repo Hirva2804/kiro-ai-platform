@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-white text-gray-900;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-all duration-150 font-medium text-sm inline-flex items-center;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-gray-900 px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-150 font-medium text-sm inline-flex items-center;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-gray-100 p-6 shadow-sm;
+  }
+
+  .badge-hot {
+    @apply bg-black text-white px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-warm {
+    @apply bg-gray-700 text-white px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-cold {
+    @apply bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  /* Clean input style */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    @apply border-gray-200 rounded-lg focus:ring-1 focus:ring-black focus:border-black transition-colors;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-200 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-300;
+  }
+}
