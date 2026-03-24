@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
@@ -37,17 +35,6 @@
 
   .badge-cold {
     @apply bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full text-xs font-medium;
-  }
-
-  /* Clean input style */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="tel"],
-  input[type="number"],
-  select,
-  textarea {
-    @apply border-gray-200 rounded-lg focus:ring-1 focus:ring-black focus:border-black transition-colors;
   }
 
   /* Scrollbar */
