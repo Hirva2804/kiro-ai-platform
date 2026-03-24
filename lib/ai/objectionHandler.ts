@@ -1,4 +1,4 @@
-import { callGeminiAPI } from './gemini';
+import { geminiGenerate } from './gemini';
 
 interface ObjectionResponse {
   response: string;
@@ -191,7 +191,7 @@ Format as JSON:
 }`;
 
   try {
-    const aiResponse = await callGeminiAPI(prompt, { temperature: 0.7 });
+    const aiResponse = await geminiGenerate(prompt);
     const parsed = JSON.parse(aiResponse);
     return parsed;
   } catch (error) {
