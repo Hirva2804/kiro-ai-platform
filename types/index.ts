@@ -18,13 +18,14 @@ export interface Lead {
   aiScore: number;
   conversionProbability: number;
   category: 'hot' | 'warm' | 'cold';
-  status: 'new' | 'contacted' | 'qualified' | 'proposal' | 'converted' | 'lost';
+  status: 'new' | 'contacted' | 'qualified' | 'proposal' | 'converted' | 'lost' | 'archived';
   email?: string;
   phone?: string;
   notes?: string;
   predictedLifetimeValue?: number;
   intentLevel?: 'low' | 'medium' | 'high';
   pageVisits?: Array<{ page: string; timeSpent: number; scrollDepth: number; timestamp: Date }>;
+  isPinned?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

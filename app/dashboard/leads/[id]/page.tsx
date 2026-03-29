@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/DashboardLayout'
 import LeadIntelligencePanel from '@/components/LeadIntelligencePanel'
 import AIDealCoach from '@/components/AIDealCoach'
@@ -9,7 +9,7 @@ import ChatWidget from '@/components/ChatWidget'
 import {
   ArrowLeft,
   Mail,
-  Phone,
+  Pin,
   MapPin,
   Building,
   User,
@@ -17,18 +17,24 @@ import {
   MessageSquare,
   Calendar,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Archive,
+  Undo2,
+  Phone
 } from 'lucide-react'
 import Link from 'next/link'
 import { Lead, LeadActivity, Recommendation } from '@/types'
 import { getLeadById, getActivities, getRecommendations, addActivity } from '@/lib/data'
+import toast from 'react-hot-toast'
 
 export default function LeadProfilePage() {
   const params = useParams()
+  const router = useRouter()
   const [lead, setLead] = useState<Lead | null>(null)
   const [recommendations, setRecommendations] = useState<Recommendation[]>([])
   const [activities, setActivities] = useState<LeadActivity[]>([])
   const [newNote, setNewNote] = useState('')
+  const [pinning, setPinning] = useState(false)
 
   useEffect(() => {
     const leadId = params.id as string
@@ -72,6 +78,31 @@ export default function LeadProfilePage() {
     return colors[status]
   }
 
+  const handlePinToggle = () => {
+    if (!lead) return
+    setPinning(true)
+    setTimeout(() => {
+      const newPinned = !lead.isPinned
+      setLead({
+        ...lead,
+        isPinned: newPinned,
+        status: newPinned ? 'archived' : 'new'
+      })
+      setPinning(false)
+      if (newPinned) {
+        toast.success(`📌 ${lead.name} pinned & archived`, {
+          style: { background: '#1e1b4b', color: '#e0e7ff', borderRadius: '12px' },
+          icon: '📌',
+        })
+      } else {
+        toast.success(`${lead.name} restored`, {
+          style: { background: '#065f46', color: '#d1fae5', borderRadius: '12px' },
+          icon: '✅',
+        })
+      }
+    }, 400)
+  }
+
   const getPriorityIcon = (priority: string) => {
     if (priority === 'high') return <AlertCircle className="h-4 w-4 text-red-500" />
     if (priority === 'medium') return <Clock className="h-4 w-4 text-yellow-500" />
@@ -109,6 +140,11 @@ export default function LeadProfilePage() {
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(lead.status)}`}>
                     {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
                   </span>
+                  {lead.isPinned && (
+                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-700 flex items-center gap-1">
+                      <Pin className="h-3 w-3 fill-indigo-500" /> Pinned
+                    </span>
+                  )}
                 </div>
                 <p className="text-gray-500">{lead.role} at {lead.company}</p>
               </div>
@@ -118,11 +154,24 @@ export default function LeadProfilePage() {
                     <Mail className="h-4 w-4 mr-2" />Email
                   </button>
                 )}
-                {lead.phone && (
-                  <button className="btn-secondary">
-                    <Phone className="h-4 w-4 mr-2" />Call
-                  </button>
-                )}
+                <button
+                  onClick={handlePinToggle}
+                  disabled={pinning}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    lead.isPinned
+                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 hover:bg-green-600 hover:shadow-green-200'
+                      : 'bg-white border border-gray-200 text-gray-600 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-700'
+                  } ${pinning ? 'opacity-70 scale-95' : ''}`}
+                >
+                  {pinning ? (
+                    <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : lead.isPinned ? (
+                    <Undo2 className="h-4 w-4" />
+                  ) : (
+                    <Pin className="h-4 w-4" />
+                  )}
+                  {lead.isPinned ? 'Restore' : 'Pin & Archive'}
+                </button>
               </div>
             </div>
           </div>
