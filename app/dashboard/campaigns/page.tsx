@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-import { getCampaigns, updateCampaignStatus, CampaignData } from '@/lib/data'
+import { getCampaigns, updateCampaignStatus, deleteCampaign, deleteAllCampaigns, CampaignData } from '@/lib/data'
 
 type Campaign = CampaignData
 
@@ -75,6 +75,35 @@ export default function CampaignsPage() {
     }))
   }
 
+  const handleDeleteCampaign = async (campaignId: string) => {
+    if (window.confirm('Are you sure you want to delete this campaign? This action cannot be undone.')) {
+      try {
+        await deleteCampaign(campaignId)
+        setCampaigns(campaigns.filter(c => c.id !== campaignId))
+      } catch (error) {
+        console.error('Failed to delete campaign:', error)
+        alert('Failed to delete campaign. Please try again.')
+      }
+    }
+  }
+
+  const handleDeleteAllCampaigns = async () => {
+    if (campaigns.length === 0) {
+      alert('No campaigns to delete.')
+      return
+    }
+    
+    if (window.confirm(`Are you sure you want to delete all ${campaigns.length} campaigns? This action cannot be undone.`)) {
+      try {
+        await deleteAllCampaigns()
+        setCampaigns([])
+      } catch (error) {
+        console.error('Failed to delete all campaigns:', error)
+        alert('Failed to delete all campaigns. Please try again.')
+      }
+    }
+  }
+
   return (
     <DashboardLayout>
       <div className="py-6">
@@ -88,10 +117,21 @@ export default function CampaignsPage() {
                   Create and manage automated outreach campaigns
                 </p>
               </div>
-              <Link href="/dashboard/campaigns/new" className="btn-primary">
-                <Plus className="h-4 w-4 mr-2" />
-                New Campaign
-              </Link>
+              <div className="flex space-x-3">
+                {campaigns.length > 0 && (
+                  <button
+                    onClick={handleDeleteAllCampaigns}
+                    className="px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2 inline" />
+                    Delete All
+                  </button>
+                )}
+                <Link href="/dashboard/campaigns/new" className="btn-primary">
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Campaign
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -225,7 +265,10 @@ export default function CampaignsPage() {
                           >
                             <Edit className="h-4 w-4" />
                           </Link>
-                          <button className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
+                          <button 
+                            onClick={() => handleDeleteCampaign(campaign.id)}
+                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>

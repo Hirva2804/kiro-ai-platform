@@ -441,3 +441,85 @@ export async function updateCampaignStatus(id: string, status: CampaignData['sta
   }
   // mock: no-op, local state handles it
 }
+
+export async function createCampaign(campaign: Omit<CampaignData, 'id' | 'createdAt' | 'stats'>): Promise<CampaignData> {
+  if (isSupabaseConfigured) {
+    try {
+      const { supabase } = await import('@/lib/supabase')
+      const { data, error } = await supabase
+        .from('campaigns')
+        .insert({
+          name: campaign.name,
+          description: campaign.description,
+          type: campaign.type,
+          status: campaign.status,
+          target_criteria: campaign.targetCriteria,
+          scheduled_at: campaign.scheduledAt,
+          stats: { totalTargets: 0, contacted: 0, opened: 0, replied: 0, converted: 0 }
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        id: data.id,
+        name: data.name,
+        description: data.description || '',
+        type: data.type as CampaignData['type'],
+        status: data.status as CampaignData['status'],
+        targetCriteria: data.target_criteria || {},
+        stats: data.stats || { totalTargets: 0, contacted: 0, opened: 0, replied: 0, converted: 0 },
+        scheduledAt: data.scheduled_at ? new Date(data.scheduled_at) : undefined,
+        createdAt: new Date(data.created_at)
+      }
+    } catch (e) {
+      console.warn('[data] Supabase createCampaign failed, using mock:', e)
+    }
+  }
+
+  // Mock implementation
+  const newCampaign: CampaignData = {
+    id: Date.now().toString(),
+    ...campaign,
+    stats: { totalTargets: 0, contacted: 0, opened: 0, replied: 0, converted: 0 },
+    createdAt: new Date()
+  }
+  mockCampaigns.push(newCampaign)
+  return newCampaign
+}
+
+export async function deleteCampaign(id: string): Promise<void> {
+  if (isSupabaseConfigured) {
+    try {
+      const { supabase } = await import('@/lib/supabase')
+      const { error } = await supabase.from('campaigns').delete().eq('id', id)
+      if (error) throw error
+      return
+    } catch (e) {
+      console.warn('[data] Supabase deleteCampaign failed:', e)
+    }
+  }
+
+  // Mock implementation
+  const index = mockCampaigns.findIndex(c => c.id === id)
+  if (index !== -1) {
+    mockCampaigns.splice(index, 1)
+  }
+}
+
+export async function deleteAllCampaigns(): Promise<void> {
+  if (isSupabaseConfigured) {
+    try {
+      const { supabase } = await import('@/lib/supabase')
+      const { error } = await supabase.from('campaigns').delete().neq('id', 'impossible')
+      if (error) throw error
+      return
+    } catch (e) {
+      console.warn('[data] Supabase deleteAllCampaigns failed:', e)
+    }
+  }
+
+  // Mock implementation
+  mockCampaigns.length = 0
+}
