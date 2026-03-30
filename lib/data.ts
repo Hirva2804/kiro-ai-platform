@@ -82,13 +82,44 @@ export async function getLeadById(id: string): Promise<Lead | null> {
 }
 
 export async function createLead(lead: Omit<Lead, 'id' | 'createdAt' | 'updatedAt'>): Promise<Lead> {
+  // When called from the browser, do inserts via a server route so we can use the service role key safely.
+  if (typeof window !== 'undefined') {
+    try {
+      const res = await fetch('/api/leads/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.message || 'Failed to create lead')
+      return {
+        ...data,
+        createdAt: new Date(data.createdAt),
+        updatedAt: new Date(data.updatedAt),
+      } as Lead
+    } catch (e: any) {
+      // Surface the error to the UI so it doesn't "succeed" with mock data.
+      console.warn('[data] Browser createLead failed:', e)
+      throw e
+    }
+  }
+
   if (isSupabaseConfigured) {
     try {
       const { supabaseAdmin } = await import('@/lib/supabase')
-      // Use authenticated user if available, otherwise fall back to demo user UUID
-      const { supabase } = await import('@/lib/supabase')
-      const { data: { user } } = await supabase.auth.getUser()
-      const createdBy = user?.id || '00000000-0000-0000-0000-000000000001'
+
+      const demoUserId = '00000000-0000-0000-0000-000000000001'
+      await supabaseAdmin
+        .from('users')
+        .upsert(
+          {
+            id: demoUserId,
+            email: 'hirvraj.gohil@gmail.com',
+            name: 'Hirvraj Gohil',
+            role: 'admin',
+          },
+          { onConflict: 'id' }
+        )
 
       const { data, error } = await supabaseAdmin
         .from('leads')
@@ -108,17 +139,24 @@ export async function createLead(lead: Omit<Lead, 'id' | 'createdAt' | 'updatedA
           phone: lead.phone,
           notes: lead.notes,
           predicted_lifetime_value: lead.predictedLifetimeValue,
-          created_by: createdBy,
+          intent_level: lead.intentLevel,
+          assigned_to: lead.assigned_to,
+          tags: lead.tags,
+          custom_fields: lead.custom_fields,
+          created_by: demoUserId,
         })
         .select()
         .single()
+
       if (error) throw error
       return rowToLead(data)
     } catch (e) {
       console.warn('[data] Supabase createLead failed:', e)
+      throw e
     }
   }
-  // Mock fallback — just return with generated id
+
+  // Mock fallback only when Supabase isn't configured at all.
   const now = new Date()
   return { ...lead, id: `mock-${Date.now()}`, createdAt: now, updatedAt: now }
 }

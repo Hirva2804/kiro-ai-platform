@@ -133,8 +133,8 @@ export default function UploadPage() {
       toast.success('Lead added successfully!')
       setShowForm(false)
       setFormData({ name: '', company: '', role: '', industry: '', location: '', source: 'Manual Entry', email: '', phone: '' })
-    } catch {
-      toast.error('Failed to save lead')
+    } catch (e: any) {
+      toast.error(e?.message || 'Failed to save lead')
     }
   }
 
@@ -233,7 +233,7 @@ export default function UploadPage() {
                       { label: 'Name *', key: 'name', type: 'text', required: true },
                       { label: 'Company *', key: 'company', type: 'text', required: true },
                       { label: 'Role', key: 'role', type: 'text', required: false },
-                      { label: 'Location', key: 'location', type: 'text', required: false },
+                      { label: 'Location', key: 'location', type: 'text', required: true },
                       { label: 'Email', key: 'email', type: 'email', required: false },
                       { label: 'Phone', key: 'phone', type: 'tel', required: false },
                     ].map(f => (
@@ -248,6 +248,7 @@ export default function UploadPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
                     <select value={formData.industry} onChange={e => setFormData({ ...formData, industry: e.target.value })}
+                      required
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary text-sm">
                       <option value="">Select Industry</option>
                       {['SaaS', 'FinTech', 'Healthcare', 'E-commerce', 'Manufacturing', 'Retail', 'EdTech', 'Other'].map(i => <option key={i}>{i}</option>)}

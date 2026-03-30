@@ -53,7 +53,18 @@ export default function DashboardPage() {
   }>({ sourceConversionRate: {}, sourcePerformance: {} })
 
   useEffect(() => {
-    getDashboardStats().then(data => setStats(data))
+    let cancelled = false
+    const load = async () => {
+      const data = await getDashboardStats()
+      if (cancelled) return
+      setStats(data)
+    }
+    load()
+    const id = window.setInterval(load, 12000)
+    return () => {
+      cancelled = true
+      window.clearInterval(id)
+    }
   }, [])
 
   useEffect(() => {

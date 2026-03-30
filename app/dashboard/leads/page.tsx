@@ -22,7 +22,20 @@ export default function LeadsPage() {
   const [pinAnimating, setPinAnimating] = useState<string | null>(null)
 
   useEffect(() => {
-    getLeads().then(data => { setLeads(data); setAllLeads(data); setLoading(false) })
+    let cancelled = false
+    const load = async () => {
+      const data = await getLeads()
+      if (cancelled) return
+      setLeads(data)
+      setAllLeads(data)
+      setLoading(false)
+    }
+    load()
+    const id = window.setInterval(load, 8000)
+    return () => {
+      cancelled = true
+      window.clearInterval(id)
+    }
   }, [])
 
   const handleAIResults = (filtered: Lead[], query: string) => {
