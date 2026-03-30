@@ -11,9 +11,9 @@ const isSupabaseConfigured = SUPABASE_URL.startsWith('https://') && SUPABASE_KEY
 
 // ─── Mock fallback ────────────────────────────────────────────────────────────
 const mockUsers: User[] = [
-  { id: '1', email: 'admin@demo.com', name: 'Admin User', role: 'admin', createdAt: new Date() },
-  { id: '2', email: 'manager@demo.com', name: 'Sales Manager', role: 'sales_manager', createdAt: new Date() },
-  { id: '3', email: 'exec@demo.com', name: 'Sales Executive', role: 'sales_executive', createdAt: new Date() },
+  { id: '1', email: 'admin@demo.com', name: 'Hirvraj Gohil', role: 'admin', createdAt: new Date() },
+  { id: '2', email: 'manager@demo.com', name: 'Raunak Bhandari', role: 'sales_manager', createdAt: new Date() },
+  { id: '3', email: 'exec@demo.com', name: 'Jayesh Garg', role: 'sales_executive', createdAt: new Date() },
 ]
 const mockPasswords: Record<string, string> = {
   'admin@demo.com': bcrypt.hashSync('demo123', 10),

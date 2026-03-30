@@ -8,9 +8,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const teamMembers = [
   {
     id: '1',
-    name: 'Alex Rivera',
+    name: 'Raunak Bhandari',
     role: 'Sales Executive',
-    avatar: 'AR',
+    avatar: 'RB',
     stats: {
       leadsAssigned: 87,
       contacted: 72,
@@ -28,9 +28,9 @@ const teamMembers = [
   },
   {
     id: '2',
-    name: 'Jordan Kim',
+    name: 'Jayesh Garg',
     role: 'Sales Executive',
-    avatar: 'JK',
+    avatar: 'JG',
     stats: {
       leadsAssigned: 94,
       contacted: 68,
@@ -48,9 +48,9 @@ const teamMembers = [
   },
   {
     id: '3',
-    name: 'Sam Patel',
+    name: 'Hirvraj Gohil',
     role: 'Sales Manager',
-    avatar: 'SP',
+    avatar: 'HG',
     stats: {
       leadsAssigned: 45,
       contacted: 40,
@@ -68,9 +68,9 @@ const teamMembers = [
   },
   {
     id: '4',
-    name: 'Casey Morgan',
+    name: 'Himanshu shah',
     role: 'Sales Executive',
-    avatar: 'CM',
+    avatar: 'HS',
     stats: {
       leadsAssigned: 76,
       contacted: 51,
@@ -181,10 +181,10 @@ export default function TeamPage() {
                     <XAxis dataKey="month" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="alex" fill="#2563eb" name="Alex" />
-                    <Bar dataKey="jordan" fill="#7c3aed" name="Jordan" />
-                    <Bar dataKey="sam" fill="#059669" name="Sam" />
-                    <Bar dataKey="casey" fill="#f59e0b" name="Casey" />
+                    <Bar dataKey="alex" fill="#2563eb" name="Raunak" />
+                    <Bar dataKey="jordan" fill="#7c3aed" name="Jayesh" />
+                    <Bar dataKey="sam" fill="#059669" name="Hirvraj" />
+                    <Bar dataKey="casey" fill="#f59e0b" name="Himanshu" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

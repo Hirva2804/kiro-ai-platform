@@ -22,10 +22,10 @@ const TABS: { id: SettingsTab; label: string; icon: any }[] = [
 ]
 
 const MOCK_TEAM = [
-  { id: '1', name: 'Alex Johnson', email: 'alex@company.com', role: 'admin', status: 'active', avatar: 'AJ' },
-  { id: '2', name: 'Sarah Chen', email: 'sarah@company.com', role: 'sales_manager', status: 'active', avatar: 'SC' },
-  { id: '3', name: 'Mike Torres', email: 'mike@company.com', role: 'sales_executive', status: 'active', avatar: 'MT' },
-  { id: '4', name: 'Priya Patel', email: 'priya@company.com', role: 'sales_executive', status: 'invited', avatar: 'PP' },
+  { id: '1', name: 'Hirvraj Gohil', email: 'hirvraj@company.com', role: 'admin', status: 'active', avatar: 'HG' },
+  { id: '2', name: 'Raunak Bhandari', email: 'raunak@company.com', role: 'sales_manager', status: 'active', avatar: 'RB' },
+  { id: '3', name: 'Jayesh Garg', email: 'jayesh@company.com', role: 'sales_executive', status: 'active', avatar: 'JG' },
+  { id: '4', name: 'Himanshu shah', email: 'himanshu@company.com', role: 'sales_executive', status: 'invited', avatar: 'HS' },
 ]
 
 export default function SettingsPage() {
@@ -34,7 +34,7 @@ export default function SettingsPage() {
   const [showPassword, setShowPassword] = useState(false)
 
   // Profile state
-  const [profile, setProfile] = useState({ name: 'Alex Johnson', email: 'alex@company.com', company: 'Acme Corp', role: 'admin', phone: '+1 (555) 000-0000', timezone: 'America/New_York' })
+  const [profile, setProfile] = useState({ name: 'Hirvraj Gohil', email: 'hirvraj@company.com', company: 'Acme Corp', role: 'admin', phone: '+1 (555) 000-0000', timezone: 'America/New_York' })
 
   // Notifications state
   const [notifications, setNotifications] = useState({

@@ -52,9 +52,9 @@ export default function LoginPage() {
             "LeadIQ Pro helped us increase our conversion rate by 3× in just 90 days."
           </blockquote>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-semibold">S</div>
+            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white text-sm font-semibold">H</div>
             <div>
-              <p className="text-white text-sm font-medium">Sarah Chen</p>
+              <p className="text-white text-sm font-medium">Hirvraj Gohil</p>
               <p className="text-gray-500 text-xs">VP Sales, TechFlow Inc</p>
             </div>
           </div>
