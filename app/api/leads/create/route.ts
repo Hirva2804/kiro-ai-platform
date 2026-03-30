@@ -29,6 +29,22 @@ function rowToLead(r: any): Lead {
 
 export async function POST(req: NextRequest) {
   try {
+    // First check if leads table exists
+    const { error: tableCheckError } = await supabaseAdmin
+      .from('leads')
+      .select('id')
+      .limit(1)
+    
+    if (tableCheckError && tableCheckError.code === 'PGRST116') {
+      return NextResponse.json(
+        { 
+          message: 'Database tables not found. Please run schema.sql in your Supabase SQL Editor first.',
+          hint: 'Go to your Supabase project → SQL Editor → paste schema.sql → Run'
+        },
+        { status: 500 }
+      )
+    }
+
     const lead = await req.json()
 
     const demoUserId = '00000000-0000-0000-0000-000000000001'
@@ -72,7 +88,17 @@ export async function POST(req: NextRequest) {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('Database error:', error)
+      return NextResponse.json(
+        { 
+          message: 'Database error: ' + (error.message || 'Unknown error'),
+          details: error,
+          hint: 'Make sure you have run schema.sql in your Supabase database'
+        },
+        { status: 500 }
+      )
+    }
 
     const created = rowToLead(data)
     return NextResponse.json({

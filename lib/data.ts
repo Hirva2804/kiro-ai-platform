@@ -10,9 +10,16 @@ import { mockLeads, mockRecommendations } from '@/lib/leads'
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
+// Debug: Log environment variables
+console.log('[data] SUPABASE_URL:', SUPABASE_URL)
+console.log('[data] SUPABASE_KEY length:', SUPABASE_KEY.length)
+console.log('[data] URL starts with https:', SUPABASE_URL.startsWith('https://'))
+
 // True only when real keys are present (not placeholder text)
 export const isSupabaseConfigured =
   SUPABASE_URL.startsWith('https://') && SUPABASE_KEY.length > 20
+
+console.log('[data] isSupabaseConfigured:', isSupabaseConfigured)
 
 // ─── Leads ────────────────────────────────────────────────────────────────────
 
