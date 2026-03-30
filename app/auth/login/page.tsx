@@ -102,27 +102,6 @@ export default function LoginPage() {
               {loading ? 'Signing in...' : <><span>Sign in</span><ArrowRight className="h-4 w-4" /></>}
             </button>
           </form>
-
-          {/* Demo accounts */}
-          <div className="mt-8">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex-1 h-px bg-gray-100" />
-              <span className="text-xs text-gray-400">Demo accounts</span>
-              <div className="flex-1 h-px bg-gray-100" />
-            </div>
-            <div className="space-y-2">
-              {[
-                { label: 'Admin', email: 'admin@demo.com', pass: 'demo123' },
-                { label: 'Sales Manager', email: 'manager@demo.com', pass: 'demo123' },
-              ].map(d => (
-                <button key={d.email} onClick={() => { setEmail(d.email); setPassword(d.pass) }}
-                  className="w-full text-left px-3 py-2.5 text-xs bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-100">
-                  <span className="font-medium text-gray-700">{d.label}</span>
-                  <span className="text-gray-400 ml-2">{d.email} / {d.pass}</span>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>

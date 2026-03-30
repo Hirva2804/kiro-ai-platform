@@ -11,14 +11,14 @@ const isSupabaseConfigured = SUPABASE_URL.startsWith('https://') && SUPABASE_KEY
 
 // ─── Mock fallback ────────────────────────────────────────────────────────────
 const mockUsers: User[] = [
-  { id: '1', email: 'admin@demo.com', name: 'Hirvraj Gohil', role: 'admin', createdAt: new Date() },
-  { id: '2', email: 'manager@demo.com', name: 'Raunak Bhandari', role: 'sales_manager', createdAt: new Date() },
-  { id: '3', email: 'exec@demo.com', name: 'Jayesh Garg', role: 'sales_executive', createdAt: new Date() },
+  { id: '1', email: 'hirvraj.gohil@gmail.com', name: 'Hirvraj Gohil', role: 'admin', createdAt: new Date() },
+  { id: '2', email: 'raunak.bhandari@company.com', name: 'Raunak Bhandari', role: 'sales_manager', createdAt: new Date() },
+  { id: '3', email: 'jayesh.garg@company.com', name: 'Jayesh Garg', role: 'sales_executive', createdAt: new Date() },
 ]
 const mockPasswords: Record<string, string> = {
-  'admin@demo.com': bcrypt.hashSync('demo123', 10),
-  'manager@demo.com': bcrypt.hashSync('demo123', 10),
-  'exec@demo.com': bcrypt.hashSync('demo123', 10),
+  'hirvraj.gohil@gmail.com': bcrypt.hashSync('Harsh@leadiq789', 10),
+  'raunak.bhandari@company.com': bcrypt.hashSync('demo123', 10),
+  'jayesh.garg@company.com': bcrypt.hashSync('demo123', 10),
 }
 
 // ─── JWT helpers ──────────────────────────────────────────────────────────────
