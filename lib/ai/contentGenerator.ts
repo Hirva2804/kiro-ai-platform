@@ -24,6 +24,66 @@ export interface GeneratedLinkedInMessage {
   inMailBody: string
 }
 
+export async function generateEmailWithPrompt(
+  lead: Lead,
+  emailType: 'cold_outreach' | 'follow_up' | 'nurture' | 'proposal' | 'closing',
+  userPrompt: string,
+  senderName: string = 'Your Name'
+): Promise<Pick<GeneratedEmail, 'subject' | 'body'>> {
+  const emailDomain = (lead.email || '').split('@')[1]?.trim() || ''
+  const typeInstructions: Record<string, string> = {
+    cold_outreach: 'First contact. Be brief (under 120 words), lead with a pain point, end with a soft CTA.',
+    follow_up: 'Following up on no response. Add new value, reference previous email, be even shorter.',
+    nurture: 'Educational content. Share an insight or stat relevant to their industry. No hard sell.',
+    proposal: 'They are qualified. Summarize the solution, ROI, and next steps clearly.',
+    closing: 'Create urgency. Reference a deadline or limited offer. Include social proof.'
+  }
+
+  const prompt = `You are an expert B2B sales copywriter. Generate ONE email draft.
+
+Lead Profile:
+- Name: ${lead.name}
+- Role: ${lead.role} at ${lead.company}
+- Industry: ${lead.industry}
+- Location: ${lead.location}
+- Source: ${lead.source}
+- Company domain (if known): ${emailDomain || 'unknown'}
+- AI Score: ${lead.aiScore}/100
+
+Sender: ${senderName}
+Email Type: ${emailType}
+Extra instructions from user (highest priority):
+${userPrompt?.trim() || '[none]'}
+
+Instructions: ${typeInstructions[emailType]}
+Tone: confident, helpful, specific to their industry/domain.
+
+Output EXACTLY in this format (no extra text):
+SUBJECT: [subject line here]
+BODY:
+[email body here]`
+
+  try {
+    const response = await geminiGenerate(prompt)
+    const lines = response.split('\n')
+    const subjectLine =
+      lines.find(l => l.startsWith('SUBJECT:'))?.replace('SUBJECT:', '').trim() ||
+      `Quick question for ${lead.name?.split(' ')[0]}`
+    const bodyStart = lines.findIndex(l => l.startsWith('BODY:')) + 1
+    const body = lines.slice(bodyStart).join('\n').trim()
+
+    return {
+      subject: subjectLine,
+      body: body || getFallbackEmail(lead, emailType, senderName),
+    }
+  } catch {
+    return {
+      subject: `Quick question for ${lead.name?.split(' ')[0]}`,
+      body: getFallbackEmail(lead, emailType, senderName),
+    }
+  }
+}
+
 // Feature 4: AI Email Generator
 export async function generateEmail(
   lead: Lead,

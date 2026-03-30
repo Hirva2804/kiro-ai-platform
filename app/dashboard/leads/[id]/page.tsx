@@ -26,6 +26,7 @@ import Link from 'next/link'
 import { Lead, LeadActivity, Recommendation } from '@/types'
 import { getLeadById, getActivities, getRecommendations, addActivity } from '@/lib/data'
 import toast from 'react-hot-toast'
+import { LeadEmailComposer } from '@/components/LeadEmailComposer'
 
 export default function LeadProfilePage() {
   const params = useParams()
@@ -35,6 +36,7 @@ export default function LeadProfilePage() {
   const [activities, setActivities] = useState<LeadActivity[]>([])
   const [newNote, setNewNote] = useState('')
   const [pinning, setPinning] = useState(false)
+  const [emailOpen, setEmailOpen] = useState(false)
 
   useEffect(() => {
     const leadId = params.id as string
@@ -150,7 +152,7 @@ export default function LeadProfilePage() {
               </div>
               <div className="flex space-x-2">
                 {lead.email && (
-                  <button className="btn-secondary">
+                  <button className="btn-secondary" onClick={() => setEmailOpen(true)}>
                     <Mail className="h-4 w-4 mr-2" />Email
                   </button>
                 )}
@@ -323,6 +325,21 @@ export default function LeadProfilePage() {
           </div>
         </div>
       </div>
+      {lead.email && (
+        <LeadEmailComposer
+          open={emailOpen}
+          onClose={() => setEmailOpen(false)}
+          leadId={lead.id}
+          leadName={lead.name}
+          leadCompany={lead.company}
+          leadEmail={lead.email}
+          onSent={async () => {
+            const fresh = await getActivities(lead.id)
+            setActivities(fresh)
+          }}
+        />
+      )}
+
       {/* Sales agent chatbot for lead conversations */}
       <ChatWidget
         mode="agent"
