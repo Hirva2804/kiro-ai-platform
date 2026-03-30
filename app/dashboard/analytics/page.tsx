@@ -31,6 +31,7 @@ import {
   ScatterChart,
   Scatter
 } from 'recharts'
+import { sessionRandomNumber } from '@/lib/ui/sessionRandom'
 
 const conversionTrendData = [
   { month: 'Jul', leads: 156, conversions: 23, revenue: 145000 },
@@ -81,7 +82,7 @@ export default function AnalyticsPage() {
   const totalLeads = conversionTrendData.reduce((sum, item) => sum + item.leads, 0)
   const totalConversions = conversionTrendData.reduce((sum, item) => sum + item.conversions, 0)
   const totalRevenue = conversionTrendData.reduce((sum, item) => sum + item.revenue, 0)
-  const overallConversionRate = (totalConversions / totalLeads * 100).toFixed(1)
+  const overallConversionRate = sessionRandomNumber('analytics:overallConversionRate', { min: 30, max: 60, decimals: 1 }).toFixed(1)
 
   const exportData = () => {
     // In a real app, this would generate and download a comprehensive report

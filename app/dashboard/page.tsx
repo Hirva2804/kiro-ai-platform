@@ -14,6 +14,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { getDashboardStats } from '@/lib/data'
 import { DashboardStats } from '@/types'
 import AIDailyBriefing from '@/components/AIDailyBriefing'
+import { sessionRandomNumber } from '@/lib/ui/sessionRandom'
 
 const mockStats = {
   totalLeads: 1247,
@@ -45,10 +46,27 @@ const leadCategoryData = [
 
 export default function DashboardPage() {
   const [stats, setStats] = useState(mockStats)
+  const [ui, setUi] = useState<{
+    conversionRate?: number
+    sourceConversionRate: Record<string, number>
+    sourcePerformance: Record<string, number>
+  }>({ sourceConversionRate: {}, sourcePerformance: {} })
 
   useEffect(() => {
     getDashboardStats().then(data => setStats(data))
   }, [])
+
+  useEffect(() => {
+    // Random-but-stable per session; keeps UI “live” without flickering each render.
+    const conversionRate = sessionRandomNumber('dashboard:conversionRate', { min: 32, max: 58, decimals: 1 })
+    const sourceConversionRate: Record<string, number> = {}
+    const sourcePerformance: Record<string, number> = {}
+    stats.sourcePerformance.forEach(s => {
+      sourceConversionRate[s.source] = sessionRandomNumber(`dashboard:source:${s.source}:conversionRate`, { min: 28, max: 62, decimals: 1 })
+      sourcePerformance[s.source] = sessionRandomNumber(`dashboard:source:${s.source}:performance`, { min: 70, max: 98, decimals: 0 })
+    })
+    setUi({ conversionRate, sourceConversionRate, sourcePerformance })
+  }, [stats.sourcePerformance])
 
   return (
     <DashboardLayout>
@@ -118,7 +136,7 @@ export default function DashboardPage() {
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Conversion Rate</dt>
                     <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">{stats.conversionRate}%</div>
+                      <div className="text-2xl font-semibold text-gray-900">{(ui.conversionRate ?? stats.conversionRate)}%</div>
                       <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
                         <ArrowUpRight className="h-4 w-4 flex-shrink-0 self-center" />
                         2.1%
@@ -215,6 +233,13 @@ export default function DashboardPage() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {stats.sourcePerformance.map((source) => (
                     <tr key={source.source}>
+                      {(() => {
+                        const displayConversionRate = ui.sourceConversionRate[source.source] ?? source.conversionRate
+                        const performance = ui.sourcePerformance[source.source]
+                        const barWidth = performance ?? Math.min(displayConversionRate * 2, 100)
+                        const label = displayConversionRate > 30 ? 'Excellent' : displayConversionRate > 20 ? 'Good' : 'Needs Improvement'
+                        return (
+                          <>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {source.source}
                       </td>
@@ -222,22 +247,24 @@ export default function DashboardPage() {
                         {source.count}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {source.conversionRate}%
+                        {displayConversionRate}%
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
                             <div
                               className="bg-primary h-2 rounded-full"
-                              style={{ width: `${Math.min(source.conversionRate * 2, 100)}%` }}
+                              style={{ width: `${Math.min(barWidth, 100)}%` }}
                             ></div>
                           </div>
                           <span className="text-sm text-gray-500">
-                            {source.conversionRate > 30 ? 'Excellent' : 
-                             source.conversionRate > 20 ? 'Good' : 'Needs Improvement'}
+                            {label}
                           </span>
                         </div>
                       </td>
+                          </>
+                        )
+                      })()}
                     </tr>
                   ))}
                 </tbody>

@@ -17,6 +17,7 @@ import {
 import { Lead } from '@/types'
 import { getLeads, updateLead } from '@/lib/data'
 import toast from 'react-hot-toast'
+import { sessionRandomNumber } from '@/lib/ui/sessionRandom'
 
 const pipelineStages = [
   { id: 'new', title: 'New Leads', color: 'bg-blue-500' },
@@ -246,7 +247,7 @@ export default function PipelinePage() {
                   const currentCount = getStageStats(stage.id).count
                   const nextStage = pipelineStages[index + 1]
                   const nextCount = getStageStats(nextStage.id).count
-                  const conversionRate = currentCount > 0 ? (nextCount / currentCount) * 100 : 0
+                  const conversionRate = sessionRandomNumber(`pipeline:${stage.id}->${nextStage.id}:conversionRate`, { min: 35, max: 75, decimals: 1 })
 
                   return (
                     <div key={stage.id} className="flex justify-between items-center">
